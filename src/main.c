@@ -82,8 +82,50 @@ void parse_by_redirect_and_pipe(int command_count,char *commands[MAX_COMMANDS]) 
     }
     for (int i=0;i<command_count;i++) {
         char * command=commands[i];
+        char *ptr;
         int input_fd=(i==0 ? STDIN_FILENO : pipes_fd[i-1][0]);
         int output_fd=(i==command_count-1 ? STDOUT_FILENO : pipes_fd[i][1]);
+        if ((ptr=strchr(command,'<'))) {
+            printf("Find <!\n");
+
+            if (input_fd!=STDIN_FILENO) {
+                perror("input_file");
+            } else {
+                char input_filename[FILENAME_MAX];
+                sscanf(ptr+1,"%s",input_filename);
+                input_fd=open(input_filename,O_RDONLY);
+                if (input_fd==-1) {
+                    perror("input_file_name");
+                } else {
+                    *ptr=' ';
+                    while (*ptr && *ptr==' ') ptr++;
+                    while (*ptr && *ptr!=' ') {
+                        *ptr=' ';
+                        ptr++;
+                    }
+                }
+            }
+        }
+        if ((ptr=strchr(command,'>'))) {
+            printf("Find >!\n");
+            if (output_fd!=STDOUT_FILENO) {
+                perror("output_file");
+            } else {
+                char output_filename[FILENAME_MAX];
+                sscanf(ptr+1,"%s",output_filename);
+                output_fd=open(output_filename,O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+                if (output_fd==-1) {
+                    perror("output_file_name");
+                } else {
+                    *ptr=' ';
+                    while (*ptr && *ptr==' ') ptr++;
+                    while (*ptr && *ptr!=' ') {
+                        *ptr=' ';
+                        ptr++;
+                    }
+                }
+            }
+        }
         pids[i]=execute_command(command,input_fd,output_fd);
         printf("pids[%d]=%d\n",i,pids[i]);
     }
@@ -163,8 +205,13 @@ void set_environment() {
     }
 }
 
+void sigint_handler(int signum) {
+    // printf("Nothing happened\n");
+}
+
 int main() {
     char *input;
+    signal(SIGINT,sigint_handler);
     set_environment();
     using_history();
     printf("Hello there!\n");
