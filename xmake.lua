@@ -1,11 +1,23 @@
 add_rules("mode.debug", "mode.release")
+set_languages("c17")
 add_defines("_GNU_SOURCE")
-
+add_includedirs("include/")
 target("XShell")
     set_kind("binary")
     add_files("src/*.c")
     add_links("readline")
+target_end()
+target("ls")
+    set_kind("binary")
+    add_files("src/utils/ls.c")
+target_end()
 
+target("cat")
+    set_kind("binary")
+    add_files("src/utils/cat.c")    
+target_end()
+
+target("mkdir",{kind="binary",files="src/utils/mkdir.c"})
 --
 -- If you want to known more usage about xmake, please see https://xmake.io
 --
