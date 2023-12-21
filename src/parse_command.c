@@ -64,6 +64,10 @@ int execute_command(char *command, int input_fd, int output_fd) {
 }
 
 void parse_by_redirect_and_pipe(int command_count,char *commands[MAX_COMMANDS],bool is_background) {
+    int dev_null=0;
+    if (is_background) {
+        dev_null=open("/dev/null",O_WRONLY);
+    }
     printf("parse_by_redirect_and_pipe\n");
     int pipes_fd[MAX_COMMANDS][2];
     pid_t pids[MAX_COMMANDS];
@@ -79,9 +83,11 @@ void parse_by_redirect_and_pipe(int command_count,char *commands[MAX_COMMANDS],b
         char *ptr;
         int input_fd=(i==0 ? STDIN_FILENO : pipes_fd[i-1][0]);
         int output_fd=(i==command_count-1 ? STDOUT_FILENO : pipes_fd[i][1]);
+        if (is_background && output_fd==STDOUT_FILENO) {
+            output_fd=dev_null;
+        } 
         if ((ptr=strchr(command,'<'))) {
             printf("Find <!\n");
-
             if (input_fd!=STDIN_FILENO) {
                 perror("input_file");
             } else {
@@ -136,6 +142,9 @@ void parse_by_redirect_and_pipe(int command_count,char *commands[MAX_COMMANDS],b
     for (int i=0;i<command_count-1;i++) {
         close(pipes_fd[i][0]);
         close(pipes_fd[i][1]);
+    }
+    if (is_background) {
+        close(dev_null);
     }
 }
 

@@ -61,6 +61,7 @@ int main() {
     printf("Hello there!\n");
     while ((input=readline(update_prompt()))) {
         // *strchr(input,'\n')='\0';
+        add_history(input);
         printf("INPUT:\"%s\"\n",input);
         printf("------------OUTPUT------------\n");
         parse_command(input);

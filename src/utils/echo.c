@@ -8,17 +8,17 @@ int main(int argc,char *argv[]) {
             fputc(c,stdout);
         }
     } else {
-        for (int i=1;argv[i]!=NULL;i++) {
-            FILE *f=fopen(argv[i],"r");
-            if (f==NULL) {
-                perror("fopen");
-                exit(EXIT_FAILURE);
-            }
-            while ((c=fgetc(f))!=EOF) {
-                fputc(c,stdout);
-            }
-            fclose(f);
-        }
+        // for (int i=1;argv[i]!=NULL;i++) {
+        //     FILE *f=fopen(argv[i],"r");
+        //     if (f==NULL) {
+        //         perror("fopen");
+        //         exit(EXIT_FAILURE);
+        //     }
+        //     while ((c=fgetc(f))!=EOF) {
+        //         fputc(c,stdout);
+        //     }
+        //     fclose(f);
+        // }
     }
     return 0;
 }
