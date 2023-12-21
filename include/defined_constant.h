@@ -1,0 +1,4 @@
+#define MAX_COMMANDS 16
+#define MAX_ARGS 16
+#define MAX_COMMAND_LENGTH 128
+    #define MAX_VAR_PATH 4096

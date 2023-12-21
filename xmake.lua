@@ -7,20 +7,13 @@ target("XShell")
     add_files("src/*.c")
     add_links("readline")
 target_end()
-target("ls")
-    set_kind("binary")
-    add_files("src/utils/ls.c")
-target_end()
-
-target("cat")
-    set_kind("binary")
-    add_files("src/utils/cat.c")    
-target_end()
-
+target("ls",{kind="binary",files="src/utils/ls.c"})
+target("cat",{kind="binary",files="src/utils/cat.c"})
 target("mkdir",{kind="binary",files="src/utils/mkdir.c"})
 target("echo",{kind="binary",files="src/utils/echo.c"})
 target("touch",{kind="binary",files="src/utils/touch.c"})
 target("less",{kind="binary",files="src/utils/less.c"})
+target("xargs",{kind="binary",files="src/utils/xargs.c"})
 --
 -- If you want to known more usage about xmake, please see https://xmake.io
 --
