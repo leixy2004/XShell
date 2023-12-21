@@ -18,7 +18,7 @@
 #define MAX_COMMAND_LENGTH 128
 
 extern char **environ;
-
+bool is_background;
 int execute_command(char *command, int input_fd, int output_fd) {
     printf("execute_command(%s,%d,%d)\n",command,input_fd,output_fd);
     
@@ -129,14 +129,15 @@ void parse_by_redirect_and_pipe(int command_count,char *commands[MAX_COMMANDS]) 
         pids[i]=execute_command(command,input_fd,output_fd);
         printf("pids[%d]=%d\n",i,pids[i]);
     }
-    for (int i=0;i<command_count;i++) {
-        int status=0;
-        // wait(NULL);
-        if (pids[i]) waitpid(pids[i],&status,0);
-        if (true) {
-            printf("Process %d exit with %d\n",pids[i],status);
+    if (!is_background) 
+        for (int i=0;i<command_count;i++) {
+            int status=0;
+            // wait(NULL);
+            if (pids[i]) waitpid(pids[i],&status,0);
+            if (true) {
+                printf("Process %d exit with %d\n",pids[i],status);
+            }
         }
-    }
     printf("completed.\n");
     for (int i=0;i<command_count-1;i++) {
         close(pipes_fd[i][0]);
@@ -220,6 +221,12 @@ int main() {
         char *ptr;
         while ((ptr=strchr(input,'\n'))) *ptr=' ';
         add_history(input);
+        if ((ptr=strchr(input,'&'))) {
+            *ptr=' ';
+            is_background=true;
+        } else {
+            is_background=false;
+        }
         printf("INPUT:\"%s\"\n",input);
         printf("------------OUTPUT------------\n");
         parse_by_semicolon(input);

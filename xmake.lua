@@ -18,6 +18,9 @@ target("cat")
 target_end()
 
 target("mkdir",{kind="binary",files="src/utils/mkdir.c"})
+target("echo",{kind="binary",files="src/utils/echo.c"})
+target("touch",{kind="binary",files="src/utils/touch.c"})
+target("less",{kind="binary",files="src/utils/less.c"})
 --
 -- If you want to known more usage about xmake, please see https://xmake.io
 --
