@@ -37,7 +37,7 @@ void print_file_info(const char *filename) {
     struct group *grp = getgrgid(file_stat.st_gid);
     printf("%s ", grp ? grp->gr_name : "unknown");
 
-    printf("%lld ", (long long)file_stat.st_size);
+    printf("%5lld ", (long long)file_stat.st_size);
 
     char time_buf[64];
     strftime(time_buf, sizeof(time_buf), "%b %e %H:%M", localtime(&file_stat.st_mtime));

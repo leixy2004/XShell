@@ -1,11 +1,13 @@
 add_rules("mode.debug", "mode.release")
 set_languages("c17")
 add_defines("_GNU_SOURCE")
+set_warnings("all","error")
 add_includedirs("include/")
 target("XShell")
     set_kind("binary")
     add_files("src/*.c")
     add_links("readline")
+    add_runenvs("PATH","build/linux/x86_64/debug/")
 target_end()
 target("xargs")
     set_kind("binary")
@@ -23,6 +25,7 @@ target("cat",{kind="binary",files="src/utils/cat.c"})
 target("mkdir",{kind="binary",files="src/utils/mkdir.c"})
 target("echo",{kind="binary",files="src/utils/echo.c"})
 target("touch",{kind="binary",files="src/utils/touch.c"})
+target("ln",{kind="binary",files="src/utils/ln.c"})
 --
 -- If you want to known more usage about xmake, please see https://xmake.io
 --

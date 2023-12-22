@@ -43,7 +43,12 @@ int *list_front(list *l) {
 }
 
 void list_pop(list *l) {
+    if (l->size==0) {
+        perror("list_pop");
+        return;
+    }
     list_node *waste=l->head;
     l->head=l->head->next;
+    l->size--;
     free(waste);
 }

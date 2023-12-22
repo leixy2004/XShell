@@ -33,6 +33,15 @@ char *update_prompt() {
     return prompt;
 }
 
+void change_to_home_dir() {
+    uid_t uid=getuid();
+    struct passwd *pw=getpwuid(uid);
+    if (chdir(pw->pw_dir)==-1) {
+        perror("change_to_home_dir");
+        exit(EXIT_FAILURE);
+    }
+}
+
 void set_environment() {
     char *name="PATH";
     char value[MAX_VAR_PATH]="/home/deblei/XShell/build/linux/x86_64/debug:";
@@ -57,6 +66,7 @@ int main() {
     char *input;
     signal(SIGINT,sigint_handler);
     set_environment();
+    change_to_home_dir();
     using_history();
     printf("Hello there!\n");
     while ((input=readline(update_prompt()))) {

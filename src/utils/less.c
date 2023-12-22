@@ -5,26 +5,26 @@
 #include <unistd.h>
 #include <string.h>
 #include "list.h"
-#define PAGE_SIZE 22
 #define BUFFER_MAX 256
+
+int page_size=22;
 static list* saved_size;
-bool display_page(FILE *file) {
+int display_page(FILE *file) {
     static char buffer[BUFFER_MAX];
     clear();
     int now_size=0;
-    for (int i=0;i<PAGE_SIZE;i++) {
+    for (int i=0;i<page_size;i++) {
         if (fgets(buffer,BUFFER_MAX,file)==NULL) {
             now_size+=strlen(buffer);
             list_push(saved_size,now_size);
-            refresh();
-            return false;
+            return i==0 ? 0 : 2;
+            // return false;
         }
         now_size+=strlen(buffer);
         printw("%s\n",buffer);
     }
     list_push(saved_size,now_size);
-    refresh();
-    return true;
+    return 1;
 }
 
 int main(int argc,char *argv[]) {
@@ -38,15 +38,17 @@ int main(int argc,char *argv[]) {
     noecho();
     raw();      // 禁用行缓冲，启用原始模式
     keypad(stdscr, TRUE);  // 启用功能键
-    clear();
+    page_size=getmaxy(stdscr);
     int ch=0;
     bool flag=display_page(file);
+    refresh();
     while (flag) {
         ch=getch();
         switch (ch)
         {
         case ' ':{
             flag=display_page(file);
+            refresh();
             break;
         }
         case 'b':{
@@ -57,6 +59,7 @@ int main(int argc,char *argv[]) {
                 list_pop(saved_size);
                 fseek(file,-(size1+size2),SEEK_CUR);
                 flag=display_page(file);
+                refresh();
             }
             break;
         }
@@ -65,11 +68,19 @@ int main(int argc,char *argv[]) {
             break;
         }
         case 'g':{
-            // bug: unaligned fastbin chunk detected 3
+            // bug: unaligned fastbin chunk detected 3: fixed
             list_delete(saved_size);
-            list_build(saved_size);
+            saved_size=list_build();
             fseek(file,0,SEEK_SET);
             flag=display_page(file);
+            refresh();
+            break;
+        }
+        case 'G':{
+            while (display_page(file)==1) { }
+            refresh();
+            flag=true;
+            break;
         }
 
         default:
