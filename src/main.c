@@ -51,7 +51,7 @@ void set_environment() {
         exit(EXIT_FAILURE);
     }
     strcat(value,current_value);
-    printf("Now set $PATH:%s\n",value);
+    // printf("Now set $PATH:%s\n",value);
     if (setenv(name,value,true)==-1) {
         perror("setenv");
         exit(EXIT_FAILURE);
@@ -72,14 +72,14 @@ int main() {
     while ((input=readline(update_prompt()))) {
         // *strchr(input,'\n')='\0';
         add_history(input);
-        printf("INPUT:\"%s\"\n",input);
-        printf("------------OUTPUT------------\n");
+        // printf("INPUT:\"%s\"\n",input);
+        // printf("------------OUTPUT------------\n");
         parse_command(input);
-        printf("--------------END-------------\n");
+        // printf("--------------END-------------\n");
 
         free(input);
         fflush(stdout);
     }
-    printf("It's over, Anakin! I have the high ground!\n");
+    // printf("It's over, Anakin! I have the high ground!\n");
     return 0;
 }

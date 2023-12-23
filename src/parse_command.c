@@ -14,7 +14,7 @@
 
 
 int execute_command(char *command, int input_fd, int output_fd) {
-    printf("execute_command(%s,%d,%d)\n",command,input_fd,output_fd);
+    // printf("execute_command(%s,%d,%d)\n",command,input_fd,output_fd);
     
     char *args[MAX_ARGS];
     char *token, *rest=command;
@@ -22,7 +22,7 @@ int execute_command(char *command, int input_fd, int output_fd) {
 
     while ((token = strtok_r(rest, " \t", &rest)) != NULL) {
         args[arg_count] = token;
-        printf("args[%d]:%s\n",arg_count,args[arg_count]);
+        // printf("args[%d]:%s\n",arg_count,args[arg_count]);
         arg_count++;
     }
 
@@ -68,7 +68,7 @@ void parse_by_redirect_and_pipe(int command_count,char *commands[MAX_COMMANDS],b
     if (is_background) {
         dev_null=open("/dev/null",O_WRONLY);
     }
-    printf("parse_by_redirect_and_pipe\n");
+    // printf("parse_by_redirect_and_pipe\n");
     int pipes_fd[MAX_COMMANDS][2];
     pid_t pids[MAX_COMMANDS];
     for (int i=0;i<command_count-1;i++) {
@@ -76,7 +76,7 @@ void parse_by_redirect_and_pipe(int command_count,char *commands[MAX_COMMANDS],b
             perror("pipe");
             exit(EXIT_FAILURE);
         }
-        printf("pipes_fd[%d]={%d,%d}\n",i,pipes_fd[i][0],pipes_fd[i][1]);
+        // printf("pipes_fd[%d]={%d,%d}\n",i,pipes_fd[i][0],pipes_fd[i][1]);
     }
     for (int i=0;i<command_count;i++) {
         char * command=commands[i];
@@ -87,7 +87,7 @@ void parse_by_redirect_and_pipe(int command_count,char *commands[MAX_COMMANDS],b
             output_fd=dev_null;
         } 
         if ((ptr=strchr(command,'<'))) {
-            printf("Find <!\n");
+            // printf("Find <!\n");
             if (input_fd!=STDIN_FILENO) {
                 perror("input_file");
             } else {
@@ -107,7 +107,7 @@ void parse_by_redirect_and_pipe(int command_count,char *commands[MAX_COMMANDS],b
             }
         }
         if ((ptr=strchr(command,'>'))) {
-            printf("Find >!\n");
+            // printf("Find >!\n");
             if (output_fd!=STDOUT_FILENO) {
                 perror("output_file");
             } else {
@@ -127,7 +127,7 @@ void parse_by_redirect_and_pipe(int command_count,char *commands[MAX_COMMANDS],b
             }
         }
         pids[i]=execute_command(command,input_fd,output_fd);
-        printf("pids[%d]=%d\n",i,pids[i]);
+        // printf("pids[%d]=%d\n",i,pids[i]);
     }
     if (!is_background) 
         for (int i=0;i<command_count;i++) {
@@ -135,10 +135,10 @@ void parse_by_redirect_and_pipe(int command_count,char *commands[MAX_COMMANDS],b
             // wait(NULL);
             if (pids[i]) waitpid(pids[i],&status,0);
             if (true) {
-                printf("Process %d exit with %d\n",pids[i],status);
+                // printf("Process %d exit with %d\n",pids[i],status);
             }
         }
-    printf("completed.\n");
+    // printf("completed.\n");
     for (int i=0;i<command_count-1;i++) {
         close(pipes_fd[i][0]);
         close(pipes_fd[i][1]);
@@ -149,7 +149,7 @@ void parse_by_redirect_and_pipe(int command_count,char *commands[MAX_COMMANDS],b
 }
 
 void parse_by_pipe(char *multi_command,bool is_background) {
-    printf("parse_by_pipe\n");
+    // printf("parse_by_pipe\n");
 
     char *token;
 
@@ -159,7 +159,7 @@ void parse_by_pipe(char *multi_command,bool is_background) {
     // Check for commands
     while ((token = strtok_r(multi_command, "|", &multi_command)) != NULL) {
         commands[command_count] = token;
-        printf("by_pipe[%d]:%s\n",command_count,commands[command_count]);
+        // printf("by_pipe[%d]:%s\n",command_count,commands[command_count]);
         command_count++;
     }
 
@@ -167,7 +167,7 @@ void parse_by_pipe(char *multi_command,bool is_background) {
 }
 
 void parse_by_semicolon(char *command,bool is_background) {
-    printf("parse_by_semicolon\n");
+    // printf("parse_by_semicolon\n");
 
     char *token, *rest = command;
     while ((token = strtok_r(rest, ";", &rest)) != NULL) {
